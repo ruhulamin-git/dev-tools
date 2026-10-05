@@ -1,0 +1,435 @@
+/* Quran Khatmah — bespoke dark/gold Islamic design system (from the Claude Design
+   redesign "Quran Khatmah.dc.html"). Scoped under `.khatmah-app` and UNLAYERED so
+   it wins over the host's Tailwind/shadcn cascade layers. Tailwind utility classes
+   may still be used for layout in markup; the .kh-* classes own the visual style. */
+
+@import url('https://fonts.googleapis.com/css2?family=Marcellus&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Amiri+Quran&family=Noto+Naskh+Arabic:wght@400;700&family=Noto+Serif+Bengali:wght@400;500;600;700&display=swap');
+
+.khatmah-app {
+	--kh-ink: #ece7fa;
+	--kh-head: #f6f1ff;
+	--kh-muted: #bcb2da;
+	--kh-muted-2: #a99ecb;
+	--kh-muted-3: #8e84b4;
+	--kh-gold: #e3c088;
+	--kh-gold-2: #e9cf9b;
+	--kh-gold-3: #c9a86a;
+	--kh-green: #41b985;
+	--kh-green-2: #54cf97;
+	--kh-green-3: #7ce0b2;
+	--kh-amber: #f0a94c;
+	--kh-danger: #f08a80;
+
+	position: relative;
+	z-index: 1;
+	width: 100%;
+	color: var(--kh-ink);
+	font-family: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+	-webkit-font-smoothing: antialiased;
+}
+.khatmah-app *,
+.khatmah-app *::before,
+.khatmah-app *::after {
+	box-sizing: border-box;
+}
+
+/* ---- decorative full-viewport background (gradients + star pattern) ---- */
+.kh-bg {
+	position: fixed;
+	inset: 0;
+	z-index: 0;
+	pointer-events: none;
+	background:
+		radial-gradient(1200px 700px at 78% -8%, rgba(95, 72, 170, 0.32), transparent 60%),
+		radial-gradient(900px 600px at 8% 100%, rgba(65, 185, 133, 0.1), transparent 55%);
+}
+.kh-bg svg {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	opacity: 0.55;
+}
+
+/* ---- type ---- */
+.kh-serif {
+	font-family: 'Marcellus', serif;
+	font-weight: 400;
+}
+.kh-arabic {
+	direction: rtl;
+	font-family: 'Amiri Quran', 'Noto Naskh Arabic', 'Traditional Arabic', serif;
+}
+.kh-arabic.indopak {
+	font-family: 'Noto Naskh Arabic', 'Amiri Quran', serif;
+}
+:where(html[lang='bn']) .khatmah-app {
+	font-family: 'Noto Serif Bengali', 'Plus Jakarta Sans', sans-serif;
+}
+.kh-muted {
+	color: var(--kh-muted);
+}
+.kh-eyebrow {
+	font-size: 12px;
+	text-transform: uppercase;
+	letter-spacing: 0.12em;
+	color: var(--kh-muted-3);
+}
+
+/* ---- screen wrappers ---- */
+.kh-screen {
+	margin: 0 auto;
+	padding: clamp(24px, 4vw, 56px) clamp(4px, 2vw, 24px) 80px;
+}
+.kh-screen--home {
+	max-width: 1140px;
+}
+.kh-screen--lobby {
+	max-width: 920px;
+}
+.kh-screen--active {
+	max-width: 1240px;
+}
+
+/* ---- surfaces ---- */
+.kh-card {
+	background: linear-gradient(180deg, #231b43, #1b1537);
+	border: 1px solid rgba(227, 192, 136, 0.2);
+	border-radius: 22px;
+}
+.kh-panel {
+	background: rgba(255, 255, 255, 0.03);
+	border: 1px solid rgba(227, 192, 136, 0.14);
+	border-radius: 22px;
+}
+
+/* ---- buttons ---- */
+.kh-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	border: none;
+	border-radius: 13px;
+	padding: 14px 24px;
+	font: 700 16px 'Plus Jakarta Sans', sans-serif;
+	cursor: pointer;
+	transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+	white-space: nowrap;
+}
+.kh-btn:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+.kh-btn-gold {
+	background: linear-gradient(180deg, #ffdc3e, #f4c400);
+	color: #2a1e08;
+	box-shadow: 0 10px 26px rgba(212, 175, 106, 0.26);
+}
+.kh-btn-gold:hover:not(:disabled) {
+	transform: translateY(-2px);
+	box-shadow: 0 16px 36px rgba(212, 175, 106, 0.38);
+}
+.kh-btn-green {
+	background: linear-gradient(180deg, #54cf97, #2e9e6e);
+	color: #06251a;
+	box-shadow: 0 10px 26px rgba(46, 158, 110, 0.3);
+}
+.kh-btn-green:hover:not(:disabled) {
+	transform: translateY(-2px);
+}
+.kh-btn-amber {
+	background: linear-gradient(180deg, #f4bd66, #e89c3c);
+	color: #2a1808;
+}
+.kh-btn-ghost {
+	background: rgba(255, 255, 255, 0.05);
+	color: #f1ecff;
+	border: 1px solid rgba(227, 192, 136, 0.34);
+}
+.kh-btn-ghost:hover:not(:disabled) {
+	background: rgba(255, 255, 255, 0.1);
+}
+.kh-btn-gold-soft {
+	background: rgba(227, 192, 136, 0.12);
+	color: var(--kh-gold-2);
+	border: 1px solid rgba(227, 192, 136, 0.4);
+}
+.kh-btn-gold-soft:hover:not(:disabled) {
+	background: rgba(227, 192, 136, 0.2);
+}
+.kh-btn-danger {
+	background: rgba(229, 103, 92, 0.1);
+	color: var(--kh-danger);
+	border: 1px solid rgba(229, 103, 92, 0.3);
+}
+.kh-btn-danger:hover:not(:disabled) {
+	background: rgba(229, 103, 92, 0.18);
+}
+.kh-btn-sm {
+	padding: 9px 14px;
+	border-radius: 9px;
+	font-size: 13px;
+}
+.kh-btn-block {
+	width: 100%;
+}
+
+/* ---- form ---- */
+.kh-label {
+	display: block;
+	font: 600 13px 'Plus Jakarta Sans', sans-serif;
+	color: #bdb3dc;
+	margin: 0 0 7px;
+}
+.kh-input {
+	width: 100%;
+	background: #171231 !important;
+	border: 1px solid rgba(227, 192, 136, 0.2);
+	border-radius: 12px;
+	padding: 14px;
+	color: #f3eeff !important;
+	/* 16px min: iOS Safari zooms the page when focusing an input below 16px,
+	   which then lets the page pan horizontally (looks like an overflow bug). */
+	font: 500 16px 'Plus Jakarta Sans', sans-serif;
+	color-scheme: dark;
+}
+.kh-input::placeholder {
+	color: #897faf;
+}
+.kh-input:focus {
+	border-color: rgba(227, 192, 136, 0.6) !important;
+	outline: none;
+	box-shadow: none !important;
+}
+.kh-input--code {
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	font-weight: 600;
+}
+.kh-hint {
+	color: #897faf;
+	font-size: 12px;
+	margin: 7px 0 0;
+	line-height: 1.5;
+}
+.kh-error {
+	color: var(--kh-danger);
+	font-size: 13px;
+	margin: 12px 0 0;
+}
+
+/* ---- pills / badges / chips ---- */
+.kh-pill {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 8px 15px;
+	border-radius: 999px;
+	background: rgba(255, 255, 255, 0.04);
+	border: 1px solid rgba(227, 192, 136, 0.16);
+	font-size: 13px;
+	color: #cdc3e6;
+}
+.kh-badge {
+	display: inline-flex;
+	align-items: center;
+	padding: 4px 11px;
+	border-radius: 999px;
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+}
+.kh-badge--open {
+	background: rgba(255, 255, 255, 0.06);
+	color: #b7acd4;
+	border: 1px solid rgba(227, 192, 136, 0.18);
+}
+.kh-badge--reading {
+	background: rgba(240, 169, 76, 0.15);
+	color: var(--kh-amber);
+	border: 1px solid rgba(240, 169, 76, 0.3);
+}
+.kh-badge--done {
+	background: rgba(84, 207, 151, 0.15);
+	color: var(--kh-green-3);
+	border: 1px solid rgba(84, 207, 151, 0.3);
+}
+.kh-status-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 9px;
+	padding: 6px 14px;
+	border-radius: 999px;
+	font-size: 12.5px;
+	font-weight: 600;
+	letter-spacing: 0.04em;
+}
+.kh-chip {
+	display: flex;
+	align-items: center;
+	gap: 9px;
+	padding: 7px 14px 7px 7px;
+	border-radius: 999px;
+	background: rgba(227, 192, 136, 0.08);
+	border: 1px solid rgba(227, 192, 136, 0.2);
+	animation: khPop 0.45s cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
+	/* never exceed the chips row — long unbroken names/IDs wrap (see kh-chip-text) */
+	max-width: 100%;
+	min-width: 0;
+}
+.kh-chip-avatar {
+	display: grid;
+	place-items: center;
+	flex: none;
+	width: 28px;
+	height: 28px;
+	border-radius: 50%;
+	background: linear-gradient(150deg, #41b985, #2e9e6e);
+	color: #06251a;
+	font-size: 12px;
+	font-weight: 700;
+}
+.kh-glyph-tile {
+	display: grid;
+	place-items: center;
+	width: 40px;
+	height: 40px;
+	flex: none;
+	border-radius: 12px;
+	background: linear-gradient(150deg, #2a2350, #1a1438);
+	border: 1px solid rgba(227, 192, 136, 0.4);
+	color: var(--kh-gold-2);
+	font-size: 22px;
+	line-height: 1;
+	box-shadow: inset 0 0 14px rgba(227, 192, 136, 0.12);
+}
+
+/* native selects styled like the design's pill dropdowns */
+.kh-select-wrap {
+	display: flex;
+	align-items: center;
+	gap: 9px;
+	background: rgba(255, 255, 255, 0.04);
+	border: 1px solid rgba(227, 192, 136, 0.22);
+	border-radius: 12px;
+	padding: 8px 11px 8px 13px;
+}
+.kh-select {
+	appearance: none;
+	-webkit-appearance: none;
+	background: transparent;
+	border: none;
+	outline: none;
+	color: #f1ecff;
+	/* 16px min so iOS Safari doesn't zoom the page when the select is focused */
+	font: 600 16px 'Plus Jakarta Sans', sans-serif;
+	padding: 0 18px 0 0;
+	cursor: pointer;
+	background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'><path d='M1 3l4 4 4-4' fill='none' stroke='%23A99ECB' stroke-width='1.6' stroke-linecap='round'/></svg>");
+	background-repeat: no-repeat;
+	background-position: right center;
+}
+.kh-select option {
+	background: #231b43;
+	color: #f1ecff;
+}
+
+/* ---- progress bar ---- */
+.kh-progress {
+	height: 8px;
+	border-radius: 999px;
+	background: rgba(255, 255, 255, 0.06);
+	overflow: hidden;
+}
+.kh-progress--lg {
+	height: 12px;
+}
+.kh-progress-fill {
+	height: 100%;
+	border-radius: 999px;
+	transition: width 0.85s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.kh-progress-fill--gold {
+	background: linear-gradient(90deg, #d4af6a, #e9cf9b);
+}
+.kh-progress-fill--green {
+	background: linear-gradient(90deg, #2e9e6e, #54cf97);
+	box-shadow: 0 0 16px rgba(84, 207, 151, 0.5);
+}
+
+/* ---- toast ---- */
+.kh-toast {
+	position: fixed;
+	left: 50%;
+	bottom: 28px;
+	transform: translateX(-50%);
+	z-index: 80;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 13px 22px;
+	border-radius: 999px;
+	background: #241c46;
+	border: 1px solid rgba(227, 192, 136, 0.4);
+	box-shadow: 0 14px 40px rgba(0, 0, 0, 0.45);
+	color: #f3eeff;
+	font-size: 14px;
+	font-weight: 600;
+	animation: khRise 0.35s ease both;
+}
+
+/* ---- animations ---- */
+@keyframes khPop {
+	0% {
+		opacity: 0;
+		transform: scale(0.85) translateY(6px);
+	}
+	100% {
+		opacity: 1;
+		transform: none;
+	}
+}
+@keyframes khRise {
+	0% {
+		opacity: 0;
+		transform: translate(-50%, 12px);
+	}
+	100% {
+		opacity: 1;
+		transform: translate(-50%, 0);
+	}
+}
+@keyframes khPulse {
+	0%,
+	100% {
+		opacity: 1;
+	}
+	50% {
+		opacity: 0.4;
+	}
+}
+@keyframes khSpin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+@keyframes khGlow {
+	0%,
+	100% {
+		box-shadow: 0 0 0 0 rgba(227, 192, 136, 0);
+	}
+	50% {
+		box-shadow: 0 0 0 6px rgba(227, 192, 136, 0.08);
+	}
+}
+.kh-anim-pulse {
+	animation: khPulse 1.7s infinite;
+}
+.kh-anim-spin {
+	animation: khSpin 6s linear infinite;
+}
+.kh-anim-glow {
+	animation: khGlow 3s infinite;
+}

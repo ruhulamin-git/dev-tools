@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" href="%sveltekit.assets%/favicon.ico" />
+		<link rel="apple-touch-icon" sizes="180x180" href="%sveltekit.assets%/favicon.ico" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+		<!-- Matches the app's actual background (bg-[#1A1139], set on #mainApp in +layout.svelte)
+		     so the browser chrome/status bar tint is cohesive with the page, not an unrelated
+		     accent color. -->
+		<meta name="theme-color" content="#1A1139" />
+		<meta name="color-scheme" content="light dark" />
+
+		<link rel="preconnect" href="https://www.googletagmanager.com" />
+
+		<!--
+			Google Consent Mode v2 defaults — must run before GTM's own script below, so the
+			container sees these defaults on its very first tag fire rather than after. Defaults
+			to denied until ConsentBanner.svelte (mounted client-side, in the app bundle) records
+			a real choice; reads that same choice back here on a later visit, synchronously, so a
+			returning visitor who already granted analytics isn't reset to denied on every load.
+			No ad_storage/ad_user_data/ad_personalization toggle is offered — this app has no ads
+			or remarketing to consent to, so those stay permanently denied rather than implying a
+			choice that doesn't exist.
+
+			Whether this actually gates anything depends on the GTM container itself being
+			configured for Consent Mode (tags set to respect analytics_storage) — that
+			configuration lives in the container, not this codebase, and needs confirming by
+			whoever has GTM access.
+		-->
+		<script>
+			(function () {
+				var granted = false;
+				try {
+					var stored = JSON.parse(localStorage.getItem('dxh_consent'));
+					granted = !!(stored && stored.analytics === true);
+				} catch (e) {
+					/* malformed value or storage unavailable — default to denied */
+				}
+				window.dataLayer = window.dataLayer || [];
+				function gtag() {
+					window.dataLayer.push(arguments);
+				}
+				gtag('consent', 'default', {
+					analytics_storage: granted ? 'granted' : 'denied',
+					ad_storage: 'denied',
+					ad_user_data: 'denied',
+					ad_personalization: 'denied'
+				});
+			})();
+		</script>
+
+		<!-- Google Tag Manager -->
+		<script>
+			(function (w, d, s, l, i) {
+				w[l] = w[l] || [];
+				w[l].push({
+					'gtm.start': new Date().getTime(),
+					event: 'gtm.js'
+				});
+				var f = d.getElementsByTagName(s)[0],
+					j = d.createElement(s),
+					dl = l != 'dataLayer' ? '&l=' + l : '';
+				j.async = true;
+				j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+				f.parentNode.insertBefore(j, f);
+			})(window, document, 'script', 'dataLayer', 'GTM-KWQHD5N');
+		</script>
+		<!-- End Google Tag Manager -->
+
+		<title>Devxhub Tools - Developer Utilities</title>
+		%sveltekit.head%
+	</head>
+
+	<body data-sveltekit-preload-data="tap">
+		<!--
+			Trusted Types policy creation used to live here as an inline bootstrap script, but it
+			only ever created a pass-through policy (`createHTML: (html) => html`) that sanitized
+			nothing — it satisfied CSP enforcement without actually protecting anything. The real,
+			sanitizing `devx-html` policy now lives in
+			src/lib/shared/utils/trustedTypes.ts, created lazily the first time `setInnerHTML` is
+			called. That call site (the markdown editor's PDF export) only ever runs well after
+			hydration, so there's no timing requirement forcing this into a pre-bundle inline
+			script the way a policy meant to cover every {@html} on the page would need.
+		-->
+		<!-- Google Tag Manager (noscript) -->
+		<noscript
+			><iframe
+				src="https://www.googletagmanager.com/ns.html?id=GTM-KWQHD5N"
+				height="0"
+				width="0"
+				style="display: none; visibility: hidden"
+			></iframe
+		></noscript>
+		<!-- End Google Tag Manager (noscript) -->
+		<div style="display: contents">%sveltekit.body%</div>
+	</body>
+</html>

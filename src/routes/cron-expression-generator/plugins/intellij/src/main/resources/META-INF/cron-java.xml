@@ -1,0 +1,15 @@
+<!--
+  Loaded only when the IDE has Java. Same split as cron-yaml.xml, and for the same reason:
+  an <annotator language="JAVA"> sitting in plugin.xml would fail at load time in WebStorm,
+  PyCharm or GoLand, taking the whole plugin down in IDEs where the YAML half works fine.
+-->
+<idea-plugin>
+    <extensions defaultExtensionNs="com.intellij">
+        <annotator
+            language="JAVA"
+            implementationClass="com.devxhub.cronexplainer.java.CronJavaAnnotator"/>
+        <completion.contributor
+            language="JAVA"
+            implementationClass="com.devxhub.cronexplainer.java.CronJavaCompletionContributor"/>
+    </extensions>
+</idea-plugin>

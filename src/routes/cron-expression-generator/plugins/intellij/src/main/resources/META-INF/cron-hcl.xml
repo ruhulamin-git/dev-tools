@@ -1,0 +1,15 @@
+<!--
+  Loaded only when the Terraform plugin is installed. Unlike YAML, Java and Kotlin this one is
+  not bundled with any IDE - it comes from the Marketplace - so for most users this file simply
+  never loads, which is exactly what the optional dependency is for.
+-->
+<idea-plugin>
+    <extensions defaultExtensionNs="com.intellij">
+        <annotator
+            language="HCL"
+            implementationClass="com.devxhub.cronexplainer.hcl.CronHclAnnotator"/>
+        <completion.contributor
+            language="HCL"
+            implementationClass="com.devxhub.cronexplainer.hcl.CronHclCompletionContributor"/>
+    </extensions>
+</idea-plugin>

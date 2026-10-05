@@ -1,0 +1,102 @@
+name: CI
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Lint, typecheck, test, build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Format check
+        run: pnpm exec prettier --check .
+
+      - name: Lint
+        run: pnpm exec eslint .
+
+      - name: Typecheck
+        run: pnpm run check
+
+      - name: Unit tests
+        run: pnpm test
+
+      - name: Build
+        run: pnpm run build
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps chromium
+
+      # Non-blocking for now: run right before adding this workflow, the suite already had 16
+      # pre-existing failures on main (navigation/keyboard-nav, theme-selector dropdown,
+      # header-footer, accessibility focus order) — the same gaps ACCESSIBILITY_AUDIT.md already
+      # documents, not something this workflow introduced. Gating merges on a suite that's
+      # already red on main would make CI permanently red through no fault of the PR being
+      # checked, which teaches people to ignore it. Visible here (and the report uploaded on
+      # failure) so it doesn't silently rot further; flip `continue-on-error` off once those are
+      # fixed.
+      - name: E2E tests
+        run: pnpm run test:e2e
+        env:
+          CI: true
+        continue-on-error: true
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
+
+  audit:
+    name: Dependency audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Non-blocking for now: this repo's audit is already clean (0 known vulnerabilities as of
+      # the security pass that added this workflow), but a brand-new advisory landing on an
+      # unrelated PR shouldn't block it from merging — it should be visible, not a hard gate,
+      # until there's a process for triaging one quickly. Flip to a plain `pnpm audit --prod`
+      # (no `|| true`) once that exists.
+      - name: pnpm audit (report only)
+        run: pnpm audit --prod || true

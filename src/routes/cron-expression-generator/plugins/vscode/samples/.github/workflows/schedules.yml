@@ -1,0 +1,51 @@
+# Open this file in the sandbox IDE to exercise the annotator.
+# Expected result is written above each expression.
+
+name: Scheduled jobs
+
+on:
+  schedule:
+    # OK - hover for "Every 15 minutes, between 09:00 AM and 05:59 PM, Monday through Friday"
+    - cron: '*/15 9-17 * * 1-5'
+
+    # WARNING (uneven step): 0, 7 ... 56, then 0 again - a 4-minute gap across the hour
+    - cron: '*/7 * * * *'
+
+    # WARNING (on the hour): minute 0 is the busiest minute on every machine
+    - cron: '0 * * * *'
+
+    # WARNING (day OR): runs on the 1st AND on every Monday - not only Mondays that are the 1st
+    - cron: '0 0 1 * 1'
+
+    # WARNING (short month): April, June, September and November have no 31st
+    - cron: '0 0 31 * *'
+
+    # WARNING (leap year): February has a 29th once every four years
+    - cron: '0 0 29 2 *'
+
+    # ERROR on the hour field only - the squiggle should cover `24`, not the whole line
+    - cron: '0 24 * * *'
+
+    # ERROR: ranges go low to high
+    - cron: '0 0 * * 5-1'
+
+    # ERROR: a step of 0 is not an interval
+    - cron: '*/0 * * * *'
+
+    # ERROR: MON is a day name in the month field
+    - cron: '0 0 * MON *'
+
+    # ERROR: six fields, with a nudge towards the dialect that takes them
+    - cron: '0 0 0 * * *'
+
+    # OK - macros expand
+    - cron: '@daily'
+
+    # ERROR - @reboot has no schedule to describe
+    - cron: '@reboot'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "not a schedule"

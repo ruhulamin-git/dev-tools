@@ -1,0 +1,218 @@
+[
+	{
+		"ar": "ٱلسَّلَامُ عَلَيْكُمْ ورحمة الله وبركاته",
+		"en": "Assalamu Alaikum wa Rahmatullahi wa Barakatuhu",
+		"bn": "আসসালামু আলাইকুম ওয়া রাহমাতুল্লাহি ওয়া বারাকাতুহু",
+		"transliteration": "Peace be upon you and Allah's mercy and blessings"
+	},
+	{
+		"ar": "وَعَلَيْكُمُ ٱلسَّلَامُ ورحمة الله وبركاته",
+		"en": "Wa Alaikum Assalam wa Rahmatullahi wa Barakatuhu",
+		"bn": "ওয়া আলাইকুমুস সালাম ওয়া রাহমাতুল্লাহি ওয়া বারাকাতুহু",
+		"transliteration": "And upon you be peace and Allah's mercy and blessings"
+	},
+	{
+		"ar": "ٱلسَّلَامُ عَلَيْكُمْ",
+		"en": "Assalamu Alaikum",
+		"bn": "আসসালামু আলাইকুম",
+		"transliteration": "Peace be upon you"
+	},
+	{
+		"ar": "وَعَلَيْكُمُ ٱلسَّلَامُ",
+		"en": "Wa Alaikum Assalam",
+		"bn": "ওয়া আলাইকুমুস সালাম",
+		"transliteration": "And upon you be peace"
+	},
+	{
+		"ar": "بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ",
+		"en": "Bismillahir Rahmanir Raheem",
+		"bn": "বিসমিল্লাহির রাহমানির রাহিম",
+		"transliteration": "In the name of Allah, the Most Gracious, the Most Merciful"
+	},
+	{
+		"ar": "بِسْمِ ٱللَّٰهِ",
+		"en": "Bismillah",
+		"bn": "বিসমিল্লাহ",
+		"transliteration": "In the name of Allah"
+	},
+	{
+		"ar": "ٱلْحَمْدُ لِلَّٰهِ",
+		"en": "Alhamdulillah",
+		"bn": "আলহামদুলিল্লাহ",
+		"transliteration": "All praise be to Allah"
+	},
+	{
+		"ar": "سُبْحَانَ ٱللَّٰهِ",
+		"en": "Subhanallah",
+		"bn": "সুবহানাল্লাহ",
+		"transliteration": "Glory be to Allah"
+	},
+	{
+		"ar": "مَا شَاءَ ٱللَّٰهُ",
+		"en": "Masha Allah",
+		"bn": "মাশাআল্লাহ",
+		"transliteration": "What Allah has willed"
+	},
+	{
+		"ar": "إِنْ شَاءَ ٱللَّٰهُ",
+		"en": "Insha Allah",
+		"bn": "ইনশাআল্লাহ",
+		"transliteration": "If Allah wills"
+	},
+	{
+		"ar": "جَزَاكَ ٱللَّٰهُ خَيْرًا",
+		"en": "Jazakallahu Khairan",
+		"bn": "জাযাকাল্লাহু খাইরান",
+		"transliteration": "May Allah reward you with goodness"
+	},
+	{
+		"ar": "أَسْتَغْفِرُ ٱللَّٰهَ",
+		"en": "Astaghfirullah",
+		"bn": "আস্তাগফিরুল্লাহ",
+		"transliteration": "I seek forgiveness from Allah"
+	},
+	{
+		"ar": "إِنَّا لِلَّٰهِ وَإِنَّا إِلَيْهِ رَاجِعُونَ",
+		"en": "Inna Lillahi wa inna ilayhi raji'un",
+		"bn": "ইন্না লিল্লাহি ওয়া ইন্না ইলাইহি রাজিউন",
+		"transliteration": "Verily we belong to Allah, and verily to Him we return"
+	},
+	{
+		"ar": "بَارَكَ ٱللَّٰهُ فِيكَ",
+		"en": "Barakallahu Feek",
+		"bn": "বারাকাল্লাহু ফিক",
+		"transliteration": "May Allah bless you"
+	},
+	{
+		"ar": "فِي أَمَانِ ٱللَّٰهِ",
+		"en": "Fi Amanillah",
+		"bn": "ফি আমানিল্লাহ",
+		"transliteration": "In the protection of Allah"
+	},
+	{
+		"ar": "ٱللَّٰهُ أَكْبَرُ",
+		"en": "Allahu Akbar",
+		"bn": "আল্লাহু আকবার",
+		"transliteration": "Allah is the Greatest"
+	},
+	{
+		"ar": "لَا إِلَٰهَ إِلَّا ٱللَّٰهُ",
+		"en": "La ilaha illallah",
+		"bn": "লা ইলাহা ইল্লাল্লাহ",
+		"transliteration": "There is no deity except Allah"
+	},
+	{
+		"ar": "صَبَاحُ ٱلْخَيْرِ",
+		"en": "Sabahul Khair",
+		"bn": "সাবাহুল খাইর",
+		"transliteration": "Good morning"
+	},
+	{
+		"ar": "مَسَاءُ ٱلْخَيْرِ",
+		"en": "Masa'ul Khair",
+		"bn": "মাসাউল খাইর",
+		"transliteration": "Good evening"
+	},
+	{
+		"ar": "تَصْبَحُ عَلَىٰ خَيْرٍ",
+		"en": "Tusbih ala Khair",
+		"bn": "তুসবিহ আলা খাইর",
+		"transliteration": "Good night"
+	},
+	{
+		"ar": "كَيْفَ حَالُكَ؟",
+		"en": "Kaifa Haluk?",
+		"bn": "কাইফা হালুক?",
+		"transliteration": "How are you?"
+	},
+	{
+		"ar": "بِخَيْرٍ وَٱلْحَمْدُ لِلَّٰهِ",
+		"en": "Bikhair wal Hamdulillah",
+		"bn": "বিখাইর ওয়াল হামদুলিল্লাহ",
+		"transliteration": "I'm well, praise be to Allah"
+	},
+	{
+		"ar": "شُكْرًا",
+		"en": "Shukran",
+		"bn": "শুকরান",
+		"transliteration": "Thank you"
+	},
+	{
+		"ar": "عَفْوًا",
+		"en": "Afwan",
+		"bn": "আফওয়ান",
+		"transliteration": "You're welcome"
+	},
+	{
+		"ar": "آسِفٌ",
+		"en": "Asif",
+		"bn": "আসিফ",
+		"transliteration": "Sorry"
+	},
+	{
+		"ar": "لَا بَأْسَ",
+		"en": "La ba's",
+		"bn": "লা বা'স",
+		"transliteration": "No problem"
+	},
+	{
+		"ar": "تَفَضَّلْ",
+		"en": "Tafaddal",
+		"bn": "তাফাদ্দাল",
+		"transliteration": "Please / Go ahead"
+	},
+	{
+		"ar": "حَفِظَكَ ٱللَّٰهُ",
+		"en": "Hafidhakallah",
+		"bn": "হাফিধাকাল্লাহ",
+		"transliteration": "May Allah protect you"
+	},
+	{
+		"ar": "جُمْعَةٌ مُبَارَكَةٌ",
+		"en": "Jumu'ah Mubarakah",
+		"bn": "জুমুআহ মুবারাকাহ",
+		"transliteration": "Blessed Friday"
+	},
+	{
+		"ar": "عِيدٌ مُبَارَكٌ",
+		"en": "Eid Mubarak",
+		"bn": "ঈদ মুবারক",
+		"transliteration": "Blessed Eid"
+	},
+	{
+		"ar": "تَقَبَّلَ ٱللَّٰهُ مِنَّا وَمِنْكُمْ",
+		"en": "Taqabbalallahu minna wa minkum",
+		"bn": "তাকাব্বালাল্লাহু মিন্না ওয়া মিনকুম",
+		"transliteration": "May Allah accept from us and from you"
+	},
+	{
+		"ar": "رَمَضَانُ مُبَارَكٌ",
+		"en": "Ramadan Mubarak",
+		"bn": "রমাদান মুবারক",
+		"transliteration": "Blessed Ramadan"
+	},
+	{
+		"ar": "أَعَانَكَ ٱللَّٰهُ",
+		"en": "A'anakallah",
+		"bn": "আ'আনাকাল্লাহ",
+		"transliteration": "May Allah help you"
+	},
+	{
+		"ar": "شَفَاكَ ٱللَّٰهُ",
+		"en": "Shafakallah",
+		"bn": "শাফাকাল্লাহ",
+		"transliteration": "May Allah cure you"
+	},
+	{
+		"ar": "يَهْدِيكَ ٱللَّٰهُ",
+		"en": "Yahdeekallah",
+		"bn": "ইয়াহদিকাল্লাহ",
+		"transliteration": "May Allah guide you"
+	},
+	{
+		"ar": "فِي رِعَايَةِ ٱللَّٰهِ",
+		"en": "Fi Ri'ayatillah",
+		"bn": "ফি রি'আয়াতিল্লাহ",
+		"transliteration": "In the care of Allah"
+	}
+]

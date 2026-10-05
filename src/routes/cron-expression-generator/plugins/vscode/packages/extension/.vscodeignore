@@ -1,0 +1,7 @@
+# Everything is bundled into dist/extension.js by esbuild, so nothing else needs shipping.
+src/**
+node_modules/**
+tsconfig.json
+esbuild.mjs
+**/*.map
+**/*.test.ts

@@ -1,0 +1,147 @@
+# =============================================================================
+# Cache-Optimized Production Dockerfile for DevXHub SPA Applications
+# Uses specific versions for maximum layer reuse across multiple projects
+# =============================================================================
+
+# Define exact base image versions for consistent cache across all projects.
+# Node and nginx each pin their own compatible Alpine release — node:24.19.0 currently ships on
+# Alpine 3.24, nginx-unprivileged:1.29.0 on 3.22; there's no single Alpine tag both publish, so
+# these are two independent pins, not one shared "ALPINE_VERSION" forced to match.
+ARG NODE_VERSION=24.19.0
+ARG NODE_ALPINE_VERSION=3.24
+ARG PNPM_VERSION=10.34.5
+ARG NGINX_VERSION=1.29.0
+ARG NGINX_ALPINE_VERSION=3.22
+
+# ===== SHARED BASE STAGE =====
+# This stage will be cached and reused across ALL your SPA projects.
+# Pinned by digest, not just tag — a tag can be repointed at a different image later; the digest
+# can't. Re-verify and update the digest deliberately (`docker pull ... && docker inspect
+# --format '{{index .RepoDigests 0}}'`) when bumping NODE_VERSION/NODE_ALPINE_VERSION above.
+FROM node:${NODE_VERSION}-alpine${NODE_ALPINE_VERSION}@sha256:d32cdf619f63fe0471182d08996dd516c6275bb5fd31ae06e55a570bd9e1ad43 AS base
+
+# Re-declare ARG variables to make them available in this stage
+ARG NODE_VERSION
+ARG NODE_ALPINE_VERSION
+ARG PNPM_VERSION
+
+# Add metadata for version tracking and cache management
+LABEL devxhub.base.node_version="${NODE_VERSION}" \
+  devxhub.base.alpine_version="${NODE_ALPINE_VERSION}" \
+  devxhub.base.pnpm_version="${PNPM_VERSION}" \
+  devxhub.base.image="node:${NODE_VERSION}-alpine${NODE_ALPINE_VERSION}" \
+  devxhub.cache.optimized="true" \
+  devxhub.base.updated="2026-01-01"
+
+# Runtime tools only — no compiler toolchain. This project's dependency tree has no package with
+# a native (node-gyp) build step (`grep requiresBuild: true pnpm-lock.yaml` finds none): the one
+# that used to (better-sqlite3) was removed as dead weight, since nothing in this static-site app
+# ever used a server-side database. python3/make/g++ and the cairo/pango/vips/giflib image
+# toolchain that would back a `canvas`/`sharp`-style dependency were never used by this project's
+# own code either — carried over from a shared multi-project template. If a project reusing this
+# Dockerfile as a template does need one of those, add it back there rather than here.
+RUN apk add --no-cache \
+  dumb-init \
+  curl \
+  tini \
+  ca-certificates
+
+# Enable Corepack and prepare specific PNPM version - shared across projects
+RUN corepack enable && corepack prepare pnpm@${PNPM_VERSION} --activate
+
+# Create consistent user across all projects
+RUN addgroup --system --gid 1001 nodejs && \
+  adduser --system --uid 1001 devxhub --ingroup nodejs
+
+WORKDIR /app
+
+# ===== DEPENDENCIES STAGE =====
+FROM base AS deps
+
+# Copy package files first (changes less frequently than source code)
+COPY package.json pnpm-lock.yaml* pnpm-workspace.yaml* ./
+COPY .npmrc* ./
+
+# Install dependencies with shared cache mount
+# PNPM store will be shared across all your SPA projects
+RUN --mount=type=cache,target=/root/.pnpm-store,sharing=shared \
+  pnpm config set store-dir /root/.pnpm-store && \
+  pnpm install --frozen-lockfile --prefer-offline
+
+# ===== BUILDER STAGE =====
+FROM deps AS builder
+
+# Copy source code (this will be project-specific)
+COPY . .
+
+# Build arguments for environment variables
+ARG NODE_ENV=production
+
+# Public/Vite build-time vars — exposed as ENV so `pnpm run build` (Vite/SvelteKit)
+# inlines them into the static bundle. NOTE: these are baked into the public JS;
+# do not pass secrets through this path.
+ARG PUBLIC_KHATMAH_BACKEND_URL
+ARG VITE_API_BASE_URL
+ARG VITE_LEADMAGNET_API_URL
+ENV PUBLIC_KHATMAH_BACKEND_URL=$PUBLIC_KHATMAH_BACKEND_URL \
+  VITE_API_BASE_URL=$VITE_API_BASE_URL \
+  VITE_LEADMAGNET_API_URL=$VITE_LEADMAGNET_API_URL
+
+# Build the SPA with cache mount for build artifacts
+RUN --mount=type=cache,target=/app/node_modules/.cache,sharing=shared \
+  --mount=type=cache,target=/app/.vite,sharing=shared \
+  pnpm run build
+
+# Verify build output exists
+RUN ls -la /app/build/ || (echo "❌ Build failed - no build directory found" && exit 1)
+
+# ===== PRODUCTION RUNTIME =====
+# nginx-unprivileged, not the stock nginx image: runs as a non-root `nginx` user (uid 101) and
+# listens on 8080 rather than 80 out of the box, rather than this Dockerfile dropping privileges
+# itself. Verified end-to-end (build + run + curl against the built output) that this image still
+# serves the app correctly with gzip_static and the security headers in nginx.conf intact.
+FROM nginxinc/nginx-unprivileged:${NGINX_VERSION}-alpine${NGINX_ALPINE_VERSION}@sha256:82dcf28da5a8cd97d43e8f8a64de766658b0c5fb9072368c5f0a9048c417a934 AS runtime
+
+# Re-declare build args for runtime stage
+ARG NODE_VERSION
+ARG NODE_ALPINE_VERSION
+ARG PNPM_VERSION
+ARG NGINX_VERSION
+ARG NGINX_ALPINE_VERSION
+ARG BUILD_VERSION
+ARG PROJECT_NAME
+
+# The base image already runs as the unprivileged `nginx` user; installing a package needs root
+# for this one layer, then drops back down.
+USER root
+RUN apk add --no-cache dumb-init
+
+# Copy static files from builder stage
+COPY --from=builder --chown=nginx:nginx /app/build /usr/share/nginx/html
+
+# Copy nginx configuration for SPA
+COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
+
+USER nginx
+
+# Add labels for better cache management and project tracking
+LABEL org.opencontainers.image.title="${PROJECT_NAME}" \
+  org.opencontainers.image.version="${BUILD_VERSION}" \
+  devxhub.project.type="spa" \
+  devxhub.build.optimized="true" \
+  devxhub.runtime.node_version="${NODE_VERSION}" \
+  devxhub.runtime.alpine_version="${NODE_ALPINE_VERSION}" \
+  devxhub.runtime.pnpm_version="${PNPM_VERSION}" \
+  devxhub.runtime.nginx_version="${NGINX_VERSION}"
+
+# Health check for nginx — port 8080, matching nginx.conf's `listen` directive for this
+# unprivileged image (ports below 1024 need root, which this image deliberately doesn't run as).
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:8080/health || exit 1
+
+# Expose the unprivileged port.
+EXPOSE 8080
+
+# Start nginx using dumb-init for proper signal handling
+ENTRYPOINT ["/usr/bin/dumb-init", "--"]
+CMD ["nginx", "-g", "daemon off;"]

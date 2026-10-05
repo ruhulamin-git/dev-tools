@@ -1,0 +1,22 @@
+{
+  "name": "@devxhub/cron-core",
+  "version": "0.1.0",
+  "description": "Dialect-aware cron parsing, description and linting. No editor or DOM dependency.",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "cron-parser": "^5.10.0",
+    "cronstrue": "^3.24.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.16"
+  }
+}

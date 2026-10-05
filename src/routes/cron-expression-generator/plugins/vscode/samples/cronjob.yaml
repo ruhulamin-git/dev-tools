@@ -1,0 +1,31 @@
+# Kubernetes CronJob - the value sits directly against the key rather than in a
+# sequence, so this exercises the other half of the key-resolution logic.
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: nightly-report
+spec:
+  # OK - hover for "At 03:00 AM"
+  schedule: "0 3 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: report
+              image: busybox
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: broken-report
+spec:
+  # ERROR - February has no 31st, so this would never run
+  schedule: "0 0 31 2 *"
+---
+# Not a schedule. The `schedule` key is not reserved, so the annotator must stay
+# silent here rather than reporting an error on ordinary prose.
+release:
+  schedule: "whenever the release manager says so"
+  cron: "not a cron expression either"

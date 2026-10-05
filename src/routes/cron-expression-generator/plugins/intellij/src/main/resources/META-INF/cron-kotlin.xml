@@ -1,0 +1,15 @@
+<!--
+  Loaded only when the IDE has Kotlin. Split out for the same reason as cron-java.xml: an
+  <annotator language="kotlin"> in plugin.xml would fail at load time wherever Kotlin is absent.
+-->
+<idea-plugin>
+    <extensions defaultExtensionNs="com.intellij">
+        <annotator
+            language="kotlin"
+            implementationClass="com.devxhub.cronexplainer.kotlin.CronKotlinAnnotator"/>
+        <completion.contributor
+            language="kotlin"
+            implementationClass="com.devxhub.cronexplainer.kotlin.CronKotlinCompletionContributor"/>
+    </extensions>
+
+</idea-plugin>

@@ -1,0 +1,587 @@
+/*
+ * Fonts — self-hosted (no fonts.googleapis.com/fonts.gstatic.com round trip) via @fontsource,
+ * each split into per-script files the browser only fetches for characters it actually renders
+ * (unicode-range), so English content only ever downloads the latin subset.
+ *
+ * This used to also load Source Code Pro and Courier Prime — in full, every weight, italic and
+ * roman — matching nothing: neither family is referenced anywhere in this codebase (`font-mono`
+ * uses Tailwind's default stack). Two complete Google Fonts families were downloaded on every
+ * page for zero visual effect. Dropped entirely.
+ *
+ * Instrument Serif — used on exactly one page (cron-expression-generator) — is loaded from that
+ * page's own component instead of here, so no other page pays for a font request it never
+ * renders.
+ */
+/* Every weight this codebase actually uses via Tailwind's font-* utilities (300/400/500/600/
+   700/900), normal and italic. @font-face is lazy — a declared weight the page never renders
+   triggers no network request — so this costs nothing beyond what's actually used per page,
+   while keeping the family name 'Roboto', unchanged from every existing reference to it. */
+@import '@fontsource/roboto/300.css';
+@import '@fontsource/roboto/300-italic.css';
+@import '@fontsource/roboto/400.css';
+@import '@fontsource/roboto/400-italic.css';
+@import '@fontsource/roboto/500.css';
+@import '@fontsource/roboto/500-italic.css';
+@import '@fontsource/roboto/600.css';
+@import '@fontsource/roboto/600-italic.css';
+@import '@fontsource/roboto/700.css';
+@import '@fontsource/roboto/700-italic.css';
+@import '@fontsource/roboto/900.css';
+@import '@fontsource/roboto/900-italic.css';
+
+@import 'tailwindcss';
+@plugin '@tailwindcss/forms';
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* SF UI Display Font - DevXHub */
+@font-face {
+	font-family: 'SF UI Display';
+	font-weight: 100;
+	font-style: normal;
+	src: url('/fonts/sf-ui-display-thin.woff') format('woff');
+}
+@font-face {
+	font-family: 'SF UI Display';
+	font-weight: 200;
+	font-style: normal;
+	src: url('/fonts/sf-ui-display-ultralight.woff') format('woff');
+}
+@font-face {
+	font-family: 'SF UI Display';
+	font-weight: 300;
+	font-style: normal;
+	src: url('/fonts/sf-ui-display-light.woff') format('woff');
+}
+@font-face {
+	font-family: 'SF UI Display';
+	font-weight: 400;
+	font-style: normal;
+	src: url('/fonts/sf-ui-display-medium.woff') format('woff');
+}
+@font-face {
+	font-family: 'SF UI Display';
+	font-weight: 500;
+	font-style: normal;
+	src: url('/fonts/sf-ui-display-medium.woff') format('woff');
+}
+@font-face {
+	font-family: 'SF UI Display';
+	font-weight: 600;
+	font-style: normal;
+	src: url('/fonts/sf-ui-display-semibold.woff') format('woff');
+}
+@font-face {
+	font-family: 'SF UI Display';
+	font-weight: 700;
+	font-style: normal;
+	src: url('/fonts/sf-ui-display-bold.woff') format('woff');
+}
+@font-face {
+	font-family: 'SF UI Display';
+	font-weight: 800;
+	font-style: normal;
+	src: url('/fonts/sf-ui-display-black.woff') format('woff');
+}
+@font-face {
+	font-family: 'SF UI Display';
+	font-weight: 900;
+	font-style: normal;
+	src: url('/fonts/sf-ui-display-heavy.woff') format('woff');
+}
+
+/* CSS Variables - DevXHub Theme */
+:root {
+	--color: #999;
+	--primary-h-color: #f1f1f2;
+	--bg-primary: #1a1139;
+	--bg-secondary: #120736;
+	--bg-header: #130c2a;
+	--accent-yellow: #ffd700;
+	--accent-orange: #fdb21d;
+	--text-primary: #f1f1f2;
+	--text-secondary: #999;
+	--gradient-start: #2a1e56;
+	--gradient-end: #3d2c79;
+}
+
+/*
+ * Design tokens, as Tailwind v4 theme variables — `--color-devx-yellow` etc. generate real
+ * utility classes (`bg-devx-yellow`, `text-devx-yellow`, `border-devx-yellow`, ...), the same way
+ * Tailwind's own palette does. This is the values above, plus spacing/radius/motion, made
+ * available to `class="..."` rather than only to hand-written CSS.
+ *
+ * A deliberate, narrow addition rather than a rename of the app's existing arbitrary-value
+ * classes (`bg-[#1A1139]`, `text-[#FFD700]`, ...): those are widespread enough that rewriting
+ * every one is a large, purely-cosmetic, high-risk mechanical change with no behavior difference
+ * to show for it. New work (the neuromarketing components below) uses these tokens directly;
+ * existing call sites can migrate opportunistically.
+ *
+ * Von Restorff / isolation effect: `devx-yellow` is reserved for *one* primary action per
+ * screen. Reaching for it a second time on the same screen dilutes the one that matters most —
+ * use a neutral (`devx-bg-dark`, border, or plain text link) for every secondary action instead.
+ */
+@theme {
+	--color-devx-bg: #1a1139;
+	--color-devx-bg-dark: #120736;
+	--color-devx-header: #130c2a;
+	--color-devx-yellow: #ffd700;
+	--color-devx-orange: #fdb21d;
+	--color-devx-text: #f1f1f2;
+	--color-devx-text-muted: #999;
+	--color-devx-gradient-start: #2a1e56;
+	--color-devx-gradient-end: #3d2c79;
+
+	/* A slightly wider radius scale than Tailwind's default, matching the rounded-xl/2xl look
+	   already used throughout (cards, buttons, modals). */
+	--radius-devx-card: 1rem;
+	--radius-devx-pill: 999px;
+
+	/* One shared easing curve for the deliberate, physical feel used on hover/press
+	   transitions — already handwritten as this exact cubic-bezier in a few places
+	   (CTA.svelte, the home page's tool cards); named here so new work reuses it. */
+	--ease-devx: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Base HTML Styles */
+html {
+	font-family: 'Roboto', sans-serif;
+	overflow-x: hidden;
+	-webkit-font-smoothing: antialiased;
+	text-rendering: optimizeLegibility;
+}
+
+/* Smooth in-page scrolling (anchor links, "scroll to top" on navigation) replaces the Lenis
+   smooth-scroll library, which ran a requestAnimationFrame loop intercepting every scroll/wheel
+   event on every page for a close approximation of this. Gated behind prefers-reduced-motion,
+   which the old unconditional `scroll-behavior: smooth` above was not. */
+@media (prefers-reduced-motion: no-preference) {
+	html {
+		scroll-behavior: smooth;
+	}
+}
+
+body {
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+	margin: 0;
+	padding: 0;
+	background-color: var(--bg-primary);
+	color: var(--text-primary);
+}
+
+/* Mobile Browser Header Styling */
+@media (max-width: 768px) {
+	body {
+		/* iOS Safari status bar styling */
+		-webkit-tap-highlight-color: rgba(253, 178, 29, 0.2);
+	}
+	
+	/* Android Chrome address bar color */
+	body::before {
+		content: '';
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		height: env(safe-area-inset-top, 0);
+		background-color: rgb(253, 178, 29);
+		z-index: 9999;
+	}
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-family: 'Roboto', sans-serif;
+}
+
+main {
+	flex: 1;
+}
+
+/* Container Fluid - DevXHub Style (exact match) */
+.container-fluid {
+	width: 100%;
+	max-width: 1280px;
+	padding-left: 20px;
+	padding-right: 20px;
+}
+
+@media (min-width: 768px) {
+	.container-fluid {
+		padding-left: 30px;
+		padding-right: 30px;
+	}
+}
+
+@media (min-width: 1280px) {
+	.container-fluid {
+		margin-left: auto;
+		margin-right: auto;
+	}
+}
+
+@media (min-width: 1360px) {
+	.container-fluid {
+		padding-left: 0;
+		padding-right: 0;
+	}
+}
+
+/* Typography Classes - DevXHub */
+.primary-h-tag,
+.secondary-h-tag {
+	color: var(--primary-h-color);
+	font-weight: 700;
+	font-size: 36px;
+	line-height: 100%;
+}
+
+@media (min-width: 768px) {
+	.primary-h-tag,
+	.secondary-h-tag {
+		font-size: 48px;
+		line-height: 56px;
+	}
+}
+
+@media (min-width: 1024px) {
+	.primary-h-tag,
+	.secondary-h-tag {
+		font-size: 72px;
+		line-height: 72px;
+	}
+}
+
+.third-h-tag {
+	color: var(--primary-h-color);
+	font-weight: 700;
+	font-size: 18px;
+}
+
+@media (min-width: 768px) {
+	.third-h-tag {
+		font-size: 20px;
+	}
+}
+
+@media (min-width: 1024px) {
+	.third-h-tag {
+		font-size: 24px;
+	}
+}
+
+.sixth-h-tag {
+	color: var(--primary-h-color);
+	font-weight: 700;
+	font-size: 22px;
+	line-height: 32px;
+}
+
+@media (min-width: 768px) {
+	.sixth-h-tag {
+		font-size: 32px;
+		line-height: 36px;
+	}
+}
+
+@media (min-width: 1024px) {
+	.sixth-h-tag {
+		font-size: 48px;
+		line-height: 56px;
+	}
+}
+
+.primary-p-tag {
+	color: var(--color);
+	font-size: 18px;
+}
+
+@media (min-width: 768px) {
+	.primary-p-tag {
+		font-size: 20px;
+	}
+}
+
+.secondary-p-tag {
+	color: var(--color);
+	font-size: 16px;
+}
+
+/* Text Gradient - DevXHub */
+.text-gradient {
+	background: linear-gradient(158deg, #833ab4 10.67%, #ffd700 84.22%);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-clip: text;
+}
+
+/* Hero Section Font */
+.hero_section_carousal_aeonik {
+	font-family: 'Roboto', sans-serif;
+}
+
+
+/* Focus visible styles for better accessibility */
+:focus-visible {
+	outline: 2px solid var(--accent-yellow);
+	outline-offset: 2px;
+}
+
+:focus:not(:focus-visible) {
+	outline: none;
+}
+
+/* Page Transitions - DevXHub Style */
+.page-enter-active,
+.page-leave-active {
+	transition: opacity 0.5s ease;
+}
+
+.page-enter-from,
+.page-leave-to {
+	opacity: 0;
+}
+
+/* Global Fade Transition */
+.globalFadeInFadeOut-enter-active,
+.globalFadeInFadeOut-leave-active {
+	transition: opacity 0.5s ease-in-out;
+}
+
+.globalFadeInFadeOut-enter-from,
+.globalFadeInFadeOut-leave-to {
+	opacity: 0;
+}
+
+/* Mobile Menu Animations - DevXHub Style */
+@keyframes menuSlideIn {
+	from {
+		width: 129px;
+		height: 44px;
+		opacity: 0.8;
+	}
+	to {
+		width: 91%;
+		height: 100%;
+		opacity: 1;
+	}
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+@keyframes expandDown {
+	from {
+		opacity: 0;
+		max-height: 0;
+		transform: translateY(-10px);
+	}
+	to {
+		opacity: 1;
+		max-height: 1000px;
+		transform: translateY(0);
+	}
+}
+
+/* Dropdown Animations */
+@keyframes slideDown {
+	from {
+		opacity: 0;
+		transform: translateY(-10px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+/* Blur Box */
+.blur-box {
+	background: rgba(255, 255, 255, 0.2);
+	backdrop-filter: blur(3px);
+}
+
+/* Social Icons */
+.social-icons {
+	width: 40px;
+	height: 40px;
+	aspect-ratio: 1;
+	object-fit: contain;
+}
+
+/* PDF Export - Legacy-safe colors for html2pdf.js */
+.pdf-export * {
+	color: #000 !important;
+	background-color: #fff !important;
+	border-color: #ddd !important;
+}
+
+/* Link Hover Effects */
+a {
+	transition: color 0.2s ease-in-out;
+}
+
+/* Button Base Styles */
+.btn-primary {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 12px 29px;
+	background-color: var(--accent-yellow);
+	color: #1d1a20;
+	border-radius: 9999px;
+	font-weight: 500;
+	transition: all 0.2s ease-in-out;
+}
+
+.btn-primary:hover {
+	filter: brightness(1.1);
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+	width: 8px;
+	height: 8px;
+}
+
+::-webkit-scrollbar-track {
+	background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+	background: var(--text-secondary);
+	border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background: var(--text-primary);
+}
+
+/* Selection Color */
+::selection {
+	background-color: var(--accent-yellow);
+	color: #1d1a20;
+}
+
+/* Z-index hierarchy for dropdowns */
+.tool-dropdown,
+.custom-select [role="listbox"],
+.ui-dropdown {
+	z-index: 40 !important;
+}
+
+.header-dropdown,
+.navigation-dropdown {
+	z-index: 60 !important;
+}
+
+/* Mobile menu scroll prevention */
+.mobile {
+	overscroll-behavior: contain;
+}
+
+/* Prevent body scroll when mobile menu is open */
+body.mobile-menu-open {
+	overflow: hidden;
+	position: fixed;
+	width: 100%;
+}
+
+/* Custom Scrollbar for overflow containers */
+.custom-scrollbar::-webkit-scrollbar {
+	width: 6px;
+	height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+	background: #64748b;
+	border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+	background: #94a3b8;
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+	background: #475569;
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+	background: #64748b;
+}
+
+/* Hide number input spinners */
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+input[type='number'] {
+	-moz-appearance: textfield;
+	appearance: textfield;
+}
+
+/* Force Blue Focus Ring for All Inputs */
+input:focus {
+	box-shadow: 0 0 0 2px rgb(147 197 253) !important;
+	border-color: rgb(59 130 246) !important;
+	outline: none !important;
+}
+
+input {
+	box-shadow: none !important;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+	box-shadow: 0 0 0 2px rgb(147 197 253), 0 0 0 1000px white inset !important;
+	border-color: rgb(59 130 246) !important;
+	-webkit-text-fill-color: rgb(15 23 42) !important;
+	color: rgb(15 23 42) !important;
+	background-color: white !important;
+	caret-color: rgb(15 23 42) !important;
+}
+
+/* Force light color scheme for form inputs to prevent white text on autocomplete */
+input,
+textarea,
+select {
+	color-scheme: light !important;
+}
+
+/* Forced Light Scrollbar for White Cards */
+.light-scrollbar::-webkit-scrollbar {
+	width: 8px;
+	height: 8px;
+}
+
+.light-scrollbar::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+.light-scrollbar::-webkit-scrollbar-thumb {
+	background: #cbd5e1; /* slate-300 */
+	border-radius: 4px;
+}
+
+.light-scrollbar::-webkit-scrollbar-thumb:hover {
+	background: #94a3b8; /* slate-400 */
+}

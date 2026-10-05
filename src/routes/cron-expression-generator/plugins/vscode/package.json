@@ -1,0 +1,23 @@
+{
+  "name": "cron-explainer-vscode",
+  "version": "0.1.0",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "build": "pnpm -r --filter cron-expression-explainer build",
+    "test": "pnpm -r test",
+    "typecheck": "pnpm -r typecheck",
+    "package": "pnpm --filter cron-expression-explainer package"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.16"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "@vscode/vsce-sign",
+      "keytar"
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+<!--
+  Dark-theme variant of pluginIcon.svg - same shape, lifted for contrast on a dark ground. 40x40 is the required size, and it is also shown at 16x16 in the plugins
+  list, which rules out anything with detail: no numerals, no hands at a readable angle.
+
+  A ring around an asterisk. The asterisk is the cron wildcard, so it says "cron" rather than
+  "clock" - and at 16px it collapses to a legible star inside a circle instead of mush.
+-->
+<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="20" cy="20" r="16" stroke="#548AF7" stroke-width="3"/>
+  <g stroke="#548AF7" stroke-width="3" stroke-linecap="round">
+    <line x1="11.5" y1="20" x2="28.5" y2="20"/>
+    <line x1="15.75" y1="12.64" x2="24.25" y2="27.36"/>
+    <line x1="24.25" y1="12.64" x2="15.75" y2="27.36"/>
+  </g>
+</svg>

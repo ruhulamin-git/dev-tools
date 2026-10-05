@@ -1,0 +1,15 @@
+<!--
+  Loaded only when the YAML plugin is present. Everything that touches YAML PSI has to live in
+  a file like this rather than in plugin.xml: an <extensions> entry naming a language the IDE
+  does not have would fail at load time and take the whole plugin down with it.
+-->
+<idea-plugin>
+    <extensions defaultExtensionNs="com.intellij">
+        <annotator
+            language="yaml"
+            implementationClass="com.devxhub.cronexplainer.yaml.CronYamlAnnotator"/>
+        <completion.contributor
+            language="yaml"
+            implementationClass="com.devxhub.cronexplainer.yaml.CronYamlCompletionContributor"/>
+    </extensions>
+</idea-plugin>

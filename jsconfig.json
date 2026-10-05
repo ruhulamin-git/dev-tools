@@ -1,0 +1,17 @@
+{
+	"compilerOptions": {
+		"module": "ESNext",
+		"moduleResolution": "bundler",
+		"allowJs": true,
+		"checkJs": true,
+		"baseUrl": ".",
+		"paths": {
+			"$lib/*": ["src/lib/*"]
+		},
+		"resolveJsonModule": true,
+		"esModuleInterop": true,
+		"skipLibCheck": true
+	},
+	"include": ["svelte.config.js", "vite.config.ts"],
+	"exclude": ["node_modules"]
+}

@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "lib": ["ES2022"],
+    // `strict` matches the web app the engine is copied from. Deliberately NOT
+    // `noUncheckedIndexedAccess`: the engine was not written for it, and rewriting
+    // ~20 index accesses here would fork this copy from the original for no
+    // behavioural gain. New code in packages/extension guards its own indexing.
+    "strict": true,
+    "noImplicitOverride": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "noEmit": true
+  }
+}

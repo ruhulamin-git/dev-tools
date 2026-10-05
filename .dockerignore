@@ -1,0 +1,29 @@
+# Keep the Docker build context lean and reproducible (mirrors a clean CI checkout).
+# Without this, `COPY . .` would copy the host's node_modules (wrong-platform
+# binaries) and leak local secrets/build output into the image.
+node_modules
+build
+.svelte-kit
+.vite
+
+# VCS / CI
+.git
+.gitignore
+.github
+
+# Local env & secrets (deps are built fresh inside the image)
+.env
+.env.*
+!.env.example
+
+# Tooling output / editor / OS cruft
+tests
+playwright-report
+test-results
+coverage
+*.log
+.DS_Store
+.vscode
+.idea
+Dockerfile*
+docker-compose*

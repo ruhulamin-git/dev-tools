@@ -1,0 +1,25 @@
+# Version catalog. Every version lives here rather than scattered through build
+# files, so upgrading is a one-line edit and Gradle can warn about conflicts.
+# Referenced from build.gradle.kts as `libs.<alias>` / `libs.plugins.<alias>`.
+
+[versions]
+kotlin = "2.1.21"
+intellijPlatform = "2.18.1"
+changelog = "2.4.0"
+cronUtils = "9.2.1"
+cronDescriptor = "3.5"
+junit = "5.11.4"
+slf4j = "2.0.7"
+
+[libraries]
+# Added in stage 1 - the JVM stand-in for cron-parser + cronstrue.
+cron-utils = { group = "com.cronutils", name = "cron-utils", version.ref = "cronUtils" }
+cron-descriptor = { group = "net.redhogs.cronparser", name = "cron-parser-core", version.ref = "cronDescriptor" }
+slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
+junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junit" }
+junit-launcher = { group = "org.junit.platform", name = "junit-platform-launcher" }
+
+[plugins]
+kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+changelog = { id = "org.jetbrains.changelog", version.ref = "changelog" }
+intellijPlatform = { id = "org.jetbrains.intellij.platform", version.ref = "intellijPlatform" }

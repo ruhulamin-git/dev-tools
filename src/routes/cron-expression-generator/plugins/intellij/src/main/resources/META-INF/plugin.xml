@@ -1,0 +1,93 @@
+<idea-plugin>
+    <!-- Must be globally unique on the JetBrains Marketplace, and permanent:
+         changing it after publishing orphans every existing install. -->
+    <id>com.devxhub.cron-explainer</id>
+
+    <name>Cron Expression Explainer</name>
+    <!-- The support contact shown on the Marketplace listing, and where JetBrains writes
+         during review. Organization vendor, so it matches the vendor profile that owns it. -->
+    <vendor email="khairul.bashar@devxhub.com" url="https://www.devxhub.com">devxhub</vendor>
+
+    <!-- Shown on the Marketplace listing. Kept in the descriptor rather than generated,
+         because unlike the change notes it describes the plugin rather than a release. -->
+    <description><![CDATA[
+        Explains cron expressions where you actually write them, so you never have to copy one
+        into a website to find out what it does.
+        <br/><br/>
+        Hover a schedule to see what it means in plain English and the next five times it runs:
+        <ul>
+            <li>GitHub Actions workflows and Kubernetes CronJobs (YAML)</li>
+            <li>Spring <code>@Scheduled</code>, in Java and in Kotlin</li>
+            <li>Terraform <code>schedule_expression</code> and <code>recurrence</code>,
+                including AWS's <code>cron(...)</code> wrapper</li>
+        </ul>
+        Each of those reads cron slightly differently, and the plugin reads each one in its own
+        dialect &mdash; five-field Unix, six-field seconds-first for Spring, and AWS EventBridge,
+        which adds a year and numbers Sunday as 1. The same six characters can mean two different
+        days in two files in the same repository.
+        <br/><br/>
+        It also warns about expressions that are perfectly legal and probably not what you meant:
+        a step that leaves a gap at the end of each hour, a day-of-month and day-of-week pair
+        that cron treats as OR rather than AND, a day several months do not have, or yet another
+        job landing on the busiest minute on the machine.
+        <br/><br/>
+        The same explainer runs in the browser, alongside our other developer tools, at
+        <a href="https://www.devxhub.com/tools/">devxhub.com/tools</a>.
+        <br/><br/>
+        <a href="https://donate.devxhub.com/">Donate</a> |
+        <a href="https://github.com/layesh/cron-explainer-plugin">GitHub</a> |
+        <a href="https://github.com/layesh/cron-explainer-plugin/issues">Issues</a>
+    ]]></description>
+
+    <!-- The minimum surface this plugin needs. Depending only on the platform
+         module means it installs into every JetBrains IDE, not just IDEA. -->
+    <depends>com.intellij.modules.platform</depends>
+
+    <!-- Optional: YAML support loads when the IDE has the YAML plugin and is skipped
+         silently when it does not. A non-optional <depends> here would stop the plugin
+         installing at all into an IDE without YAML, and an <annotator language="yaml">
+         in this file would fail at load time for the same reason - which is why that
+         extension lives in cron-yaml.xml instead. -->
+    <depends optional="true" config-file="cron-yaml.xml">org.jetbrains.plugins.yaml</depends>
+
+    <!-- Optional in the same way, for Spring @Scheduled in Java sources. Present in IDEA and
+         Android Studio, absent in WebStorm and PyCharm, where the YAML half still works. -->
+    <depends optional="true" config-file="cron-java.xml">com.intellij.java</depends>
+
+    <!-- And Kotlin, where the same annotation is written against a different PSI. -->
+    <depends optional="true" config-file="cron-kotlin.xml">org.jetbrains.kotlin</depends>
+
+    <!-- Terraform, for AWS EventBridge schedules. A Marketplace plugin rather than a bundled
+         one, so this dependency is unmet for most users - and unmet is the normal case. -->
+    <depends optional="true" config-file="cron-hcl.xml">org.intellij.plugins.hcl</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Language-agnostic, so it belongs here rather than in one of the config files. -->
+        <colorSettingsPage implementation="com.devxhub.cronexplainer.CronColorSettingsPage"/>
+    </extensions>
+
+    <!--
+      Since 2024.2 a plugin that touches Kotlin must say whether it works under the K2 compiler
+      mode; saying nothing is read as "K1 only" and excludes it from the mode current IDEs now
+      default to. The Kotlin annotator only walks PSI - it never asks the Analysis API to
+      resolve anything - so it is indifferent to which frontend is running.
+
+      This is a declaration about the plugin rather than an extension that does anything, and it
+      has to sit in the main descriptor: the Kotlin plugin reads it before optional config files
+      are merged, so a copy in cron-kotlin.xml is never seen. The plugin verifier agrees - it
+      reported the warning unchanged while the declaration lived there.
+    -->
+    <extensions defaultExtensionNs="org.jetbrains.kotlin">
+        <supportsKotlinPluginMode supportsK2="true"/>
+    </extensions>
+
+    <actions>
+        <action
+            id="com.devxhub.cronexplainer.ExplainCronAction"
+            class="com.devxhub.cronexplainer.ExplainCronAction"
+            text="Explain Cron Expression..."
+            description="Explain a cron expression in plain English">
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
+        </action>
+    </actions>
+</idea-plugin>

@@ -1,0 +1,61 @@
+{
+  "name": "cron-expression-explainer",
+  "displayName": "Cron Expression Explainer",
+  "description": "Explains cron expressions in GitHub Actions, Kubernetes, Spring @Scheduled and Terraform, where you write them.",
+  "version": "0.1.1",
+  "license": "MIT",
+  "publisher": "devxhub",
+  "private": true,
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Linters",
+    "Other"
+  ],
+  "keywords": [
+    "cron",
+    "crontab",
+    "schedule",
+    "github actions",
+    "kubernetes"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/layesh/cron-explainer-vscode"
+  },
+  "icon": "icon.png",
+  "sponsor": {
+    "url": "https://donate.devxhub.com/"
+  },
+  "main": "./dist/extension.js",
+  "activationEvents": [
+    "onLanguage:yaml",
+    "onLanguage:github-actions-workflow",
+    "onLanguage:java",
+    "onLanguage:kotlin",
+    "onLanguage:terraform",
+    "onLanguage:tf",
+    "onLanguage:hcl"
+  ],
+  "contributes": {},
+  "scripts": {
+    "build": "node esbuild.mjs",
+    "watch": "node esbuild.mjs --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "package": "pnpm build && vsce package --no-dependencies"
+  },
+  "dependencies": {
+    "@devxhub/cron-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.0",
+    "@types/vscode": "^1.85.0",
+    "@vscode/vsce": "^3.2.0",
+    "esbuild": "^0.27.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.16"
+  }
+}
