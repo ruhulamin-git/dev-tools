@@ -101,7 +101,7 @@
 		"socket.io-client": "^4.8.4",
 		"spark-md5": "^3.0.2",
 		"svelte-codemirror-editor": "^2.1.0",
-		"tailwind-merge": "^3.7.0",
+		"tailwind-merge": "^3.7.1",
 		"unified": "^11.0.5"
 	},
 	"packageManager": "pnpm@10.34.5"
